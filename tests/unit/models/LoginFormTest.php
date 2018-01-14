@@ -3,10 +3,21 @@
 namespace tests\models;
 
 use app\models\LoginForm;
-use Codeception\Specify;
+use app\tests\fixtures\UserFixture;
 
 class LoginFormTest extends \Codeception\Test\Unit
 {
+    public function _fixtures()
+    {
+        return [
+            'user' => [
+                'class' => UserFixture::className(),
+                // fixture data located in tests/_data/user.php
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
+        ];
+    }
+
     private $model;
 
     protected function _after()
@@ -28,7 +39,7 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testLoginWrongPassword()
     {
         $this->model = new LoginForm([
-            'username' => 'demo',
+            'username' => 'admin',
             'password' => 'wrong_password',
         ]);
 
@@ -40,8 +51,8 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testLoginCorrect()
     {
         $this->model = new LoginForm([
-            'username' => 'demo',
-            'password' => 'demo',
+            'username' => 'user1',
+            'password' => 'user1',
         ]);
 
         expect_that($this->model->login());

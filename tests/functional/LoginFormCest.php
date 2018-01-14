@@ -2,6 +2,17 @@
 
 class LoginFormCest
 {
+    public function _fixtures()
+    {
+        return [
+            'user' => [
+                'class' => \app\tests\fixtures\UserFixture::className(),
+                // fixture data located in tests/_data/user.php
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
+        ];
+    }
+
     public function _before(\FunctionalTester $I)
     {
         $I->amOnRoute('site/login');
@@ -16,17 +27,19 @@ class LoginFormCest
     // demonstrates `amLoggedInAs` method
     public function internalLoginById(\FunctionalTester $I)
     {
-        $I->amLoggedInAs(100);
+        $user = $I->grabFixture('user', 'user1');
+        $I->amLoggedInAs($user['id']);
         $I->amOnPage('/');
-        $I->see('Logout (admin)');
+        $I->see('Logout (' . $user['username'] . ')');
     }
 
     // demonstrates `amLoggedInAs` method
     public function internalLoginByInstance(\FunctionalTester $I)
     {
-        $I->amLoggedInAs(\app\models\User::findByUsername('admin'));
+        $user = $I->grabFixture('user', 'user1');
+        $I->amLoggedInAs(\app\models\User::findByUsername($user['username']));
         $I->amOnPage('/');
-        $I->see('Logout (admin)');
+        $I->see('Logout (' . $user['username'] . ')');
     }
 
     public function loginWithEmptyCredentials(\FunctionalTester $I)
@@ -40,7 +53,7 @@ class LoginFormCest
     public function loginWithWrongCredentials(\FunctionalTester $I)
     {
         $I->submitForm('#login-form', [
-            'LoginForm[username]' => 'admin',
+            'LoginForm[username]' => 'user1',
             'LoginForm[password]' => 'wrong',
         ]);
         $I->expectTo('see validations errors');
@@ -50,10 +63,10 @@ class LoginFormCest
     public function loginSuccessfully(\FunctionalTester $I)
     {
         $I->submitForm('#login-form', [
-            'LoginForm[username]' => 'admin',
-            'LoginForm[password]' => 'admin',
+            'LoginForm[username]' => 'user1',
+            'LoginForm[password]' => 'user1',
         ]);
-        $I->see('Logout (admin)');
+        $I->see('Logout (user1)');
         $I->dontSeeElement('form#login-form');              
     }
 }

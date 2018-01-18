@@ -19,6 +19,7 @@ class m180107_055339_create_news extends Migration
             'auth_key' => $this->string(256),
             'access_token' => $this->string(256),
             'email' => $this->string(254),
+            'email_confirmed' => $this->boolean()->notNull()->defaultValue(false),
             'active' => $this->boolean()->notNull()->defaultValue(false),
             'created' => $this->dateTime()->notNull()->defaultExpression('now()'),
             'last_visit' => $this->dateTime(),

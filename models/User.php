@@ -11,11 +11,12 @@ use Yii;
  *
  * @property int $id
  * @property string $username
- * @property string $password
+ * @property string $password write-only password
  * @property string $password_hash
  * @property string $auth_key
  * @property string $access_token
  * @property string $email
+ * @property bool $email_confirmed
  * @property bool $active
  * @property string $created
  * @property string $last_visit
@@ -24,8 +25,6 @@ use Yii;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    public $password;
-
     /**
      * @inheritdoc
      */
@@ -41,7 +40,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['active'], 'boolean'],
-            [['username', 'password', 'access_token'], 'string', 'max' => 256],
+            [['username'], 'string', 'max' => 256],
             [['username'], 'unique'],
             [['email'], 'email'],
             [['email'], 'unique'],
@@ -61,6 +60,7 @@ class User extends ActiveRecord implements IdentityInterface
             'auth_key' => Yii::t('app', 'Auth Key'),
             'access_token' => Yii::t('app', 'Access Token'),
             'email' => Yii::t('app', 'Email'),
+            'email_confirmed' => Yii::t('app', 'Email Confirmed'),
             'active' => Yii::t('app', 'Active'),
             'created' => Yii::t('app', 'Created'),
             'last_visit' => Yii::t('app', 'Last Visit'),
@@ -152,15 +152,31 @@ class User extends ActiveRecord implements IdentityInterface
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function generateAccessToken()
+    {
+        $this->access_token = Yii::$app->security->generateRandomString();
+    }
+
+    public function removeAccessToken()
+    {
+        $this->access_token = null;
+    }
+
+    public function confirmEmail()
+    {
+        $this->email_confirmed = true;
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->auth_key = Yii::$app->security->generateRandomString();
-            }
-
-            if (!empty($this->password)) {
-                $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
             }
             return true;
         }

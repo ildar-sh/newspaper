@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\ConfirmEmailForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -83,6 +84,26 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionConfirmEmail()
+    {
+        $model = new ConfirmEmailForm();
+
+        if (!Yii::$app->request->isPost) {
+            $dataLoaded = $model->load(Yii::$app->request->get());
+        } else {
+            $dataLoaded = $model->load(Yii::$app->request->post());
+        }
+
+        if ($dataLoaded && $model->confirmEmailAndLogin()) {
+            Yii::$app->session->addFlash('Email confirmed');
+            return $this->goHome();
+        }
+
+        return $this->render('confirmEmail', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Login action.
      *
@@ -128,6 +149,7 @@ class SiteController extends Controller
 
             return $this->refresh();
         }
+
         return $this->render('contact', [
             'model' => $model,
         ]);

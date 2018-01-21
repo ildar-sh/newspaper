@@ -8,6 +8,11 @@ use app\tests\fixtures\UserFixture;
 
 class UserTest extends \Codeception\Test\Unit
 {
+    /**
+     * @var \UnitTester
+     */
+    public $tester;
+
     public function _fixtures()
     {
         return [
@@ -59,7 +64,7 @@ class UserTest extends \Codeception\Test\Unit
 
     public function testFindByUsername()
     {
-        $users = $this->getModule('Yii2')->grabFixture('user');
+        $users = $this->tester->grabFixture('user');
 
         expect_that($user1 = User::findByUsername($users['user1']['username']));
         expect_that($user1->id == $users['user1']['id']);
@@ -72,7 +77,7 @@ class UserTest extends \Codeception\Test\Unit
 
     public function testFindActiveUserByIdentity()
     {
-        $users = $this->getModule('Yii2')->grabFixture('user');
+        $users = $this->tester->grabFixture('user');
 
         expect_that($user1 = User::findIdentity($users['user1']['id']));
         expect_that($user1->username == $users['user1']['username']);

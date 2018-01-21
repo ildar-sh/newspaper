@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use yii\base\Event;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use Yii;
@@ -25,6 +26,16 @@ use Yii;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    /**
+     * @event Event an event that is triggered when the user registered.
+     */
+    const EVENT_IS_REGISTERED = 'is_registered';
+
+    /**
+     * @event Event an event that is triggered when the user created by admin.
+     */
+    const EVENT_IS_CREATED_BY_ADMIN = 'is_created_by_admin';
+
     /**
      * @inheritdoc
      */
@@ -167,11 +178,6 @@ class User extends ActiveRecord implements IdentityInterface
         $this->access_token = null;
     }
 
-    public function confirmEmail()
-    {
-        $this->email_confirmed = true;
-    }
-
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
@@ -181,5 +187,52 @@ class User extends ActiveRecord implements IdentityInterface
             return true;
         }
         return false;
+    }
+
+    public function confirmEmail()
+    {
+        $this->email_confirmed = true;
+        $this->removeConfirmationCode();
+    }
+
+    public static function findByConfirmationCode($confirmationCode)
+    {
+        // TODO To add checksum to a confirmation code and to check it before request to DB
+        return static::findIdentityByAccessToken($confirmationCode);
+    }
+
+    public function generateConfirmationCode()
+    {
+        $this->generateAccessToken();
+    }
+
+    public function getConfirmationCode()
+    {
+        return $this->access_token;
+    }
+
+    public function removeConfirmationCode()
+    {
+        $this->removeAccessToken();
+    }
+
+    public function register($username, $password, $email)
+    {
+        $this->username = $username;
+        $this->password = $password;
+        $this->email = $email;
+        $this->active = true;
+        $this->email_confirmed = false;
+        $this->generateConfirmationCode();
+
+        if ($this->save(false)) {
+            $event = new Event();
+
+            $this->trigger(self::EVENT_IS_REGISTERED, $event);
+
+            return true;
+        } else {
+            return false;
+        }
     }
 }

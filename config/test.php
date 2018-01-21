@@ -13,6 +13,9 @@ return [
         '@npm'   => '@vendor/npm-asset',
     ],  
     'language' => 'en-US',
+    'bootstrap' => [
+        'app\components\UserRemainder',
+    ],
     'components' => [
         'db' => $db,
         'mailer' => [
@@ -36,7 +39,14 @@ return [
                 'domain' => 'localhost',
             ],
             */
-        ],        
+        ],
     ],
     'params' => $params,
+    'container' => [
+        'definitions' => [
+            'app\components\UserRemainder' => ['emailFrom' => 'no-replay@newspaper.com'],
+        ],
+        'singletons' => [
+        ]
+    ]
 ];

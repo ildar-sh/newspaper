@@ -6,7 +6,10 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => [
+        'log',
+        'app\components\UserRemainder',
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -53,6 +56,13 @@ $config = [
         */
     ],
     'params' => $params,
+    'container' => [
+        'definitions' => [
+            'app\components\UserRemainder' => ['emailFrom' => 'no-replay@newspaper.com'],
+        ],
+        'singletons' => [
+        ]
+    ],
 ];
 
 if (YII_ENV_DEV) {

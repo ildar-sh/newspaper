@@ -8,6 +8,11 @@ use app\tests\fixtures\UserFixture;
 
 class ConfirmEmailFormTest extends \Codeception\Test\Unit
 {
+    /**
+     * @var \UnitTester
+     */
+    public $tester;
+
     public function _fixtures()
     {
         return [
@@ -49,21 +54,21 @@ class ConfirmEmailFormTest extends \Codeception\Test\Unit
         /**
          * @var $user1 User
          */
-        $user1 = $this->getModule('Yii2')->grabFixture('user','user1');
+        $user1 = $this->tester->grabFixture('user','user1');
 
         expect_not($user1->email_confirmed);
 
-        $user1->generateAccessToken();
+        $user1->generateConfirmationCode();
         $user1->save();
 
         $model = new ConfirmEmailForm([
-            'confirmation_code' => $user1->access_token,
+            'confirmation_code' => $user1->getConfirmationCode(),
         ]);
 
         $this->assertEquals(true, $result = $model->confirmEmailAndLogin(), print_r([
             'result' => $result,
             'errors' => $model->getErrors(),
-            'access_token' => $user1->access_token,
+            'access_token' => $user1->getConfirmationCode(),
             'model.access_token' => $model->confirmation_code,
         ],true));
 
@@ -71,7 +76,7 @@ class ConfirmEmailFormTest extends \Codeception\Test\Unit
         expect_not(\Yii::$app->user->isGuest);
 
         $user = \Yii::$app->user->getIdentity();
-        expect_not($user->access_token);
+        expect_not($user->getConfirmationCode());
         expect_that($user->email_confirmed);
     }
 

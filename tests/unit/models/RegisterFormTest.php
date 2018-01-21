@@ -103,11 +103,15 @@ class RegisterFormTest extends \Codeception\Test\Unit
         ]);
 
         expect_that($this->model->register());
-//        $emailMessage = $this->tester->grabLastSentEmail();
-//        expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
-//        expect($emailMessage->getTo())->hasKey('user3@gmail.com');
-//        expect($emailMessage->getFrom())->hasKey('no-replay@newspaper.com');
-//        expect($emailMessage->getSubject())->equals('Activation url');
+
+        // using Yii2 module actions to check email was sent
+        $this->tester->seeEmailIsSent();
+
+        $emailMessage = $this->tester->grabLastSentEmail();
+        expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
+        expect($emailMessage->getTo())->hasKey('user3@gmail.com');
+        expect($emailMessage->getFrom())->hasKey('no-replay@newspaper.com');
+        expect($emailMessage->getSubject())->equals('Activation url');
     }
 
 }

@@ -37,7 +37,7 @@ class RegisterForm extends Model
     public function register()
     {
         if ($this->validate()) {
-            if ($this->createUser($this)) {
+            if ($this->registerUser($this)) {
                 return true;
             } else {
                 $this->addError('username', 'Unknown error. Try to register later!');
@@ -53,16 +53,9 @@ class RegisterForm extends Model
      * @param self $form
      * @return true if success, or false on failure
      */
-    public function createUser(self $form)
+    public function registerUser(self $form)
     {
         $user = new User();
-        $user->active = false;
-        $user->username = $form->username;
-        $user->email = $form->email;
-        $user->password = $form->password;
-
-        // TODO send activation email
-
-        return $user->save();
+        return $user->register($form->username, $form->password, $form->email);
     }
 }

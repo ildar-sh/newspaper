@@ -106,8 +106,9 @@ class RegisterFormTest extends \Codeception\Test\Unit
 
         // using Yii2 module actions to check email was sent
         $this->tester->seeEmailIsSent();
-
+        
         $emailMessage = $this->tester->grabLastSentEmail();
+        codecept_debug($emailMessage);
         expect('valid email is sent', $emailMessage)->isInstanceOf('yii\mail\MessageInterface');
         expect($emailMessage->getTo())->hasKey('user3@gmail.com');
         expect($emailMessage->getFrom())->hasKey('no-replay@newspaper.com');

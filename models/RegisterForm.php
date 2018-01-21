@@ -15,6 +15,8 @@ class RegisterForm extends Model
     public $repeatPassword;
     public $email;
 
+    protected $user;
+
 
     /**
      * @return array the validation rules.
@@ -55,7 +57,12 @@ class RegisterForm extends Model
      */
     public function registerUser(self $form)
     {
-        $user = new User();
-        return $user->register($form->username, $form->password, $form->email);
+        $this->user = new User();
+        return $this->user->register($form->username, $form->password, $form->email);
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }

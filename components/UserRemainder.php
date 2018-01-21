@@ -12,7 +12,7 @@ use Yii;
 use yii\base\BaseObject;
 use yii\base\Event;
 use app\models\User;
-use yii\mail\MailerInterface;
+use yii\helpers\Url;
 
 class UserRemainder extends BaseObject
 {
@@ -32,7 +32,8 @@ class UserRemainder extends BaseObject
          */
         $user = $event->sender;
 
-        $text = $user->getConfirmationCode();
+        $confirmationCode = $user->getConfirmationCode();
+        $text = Url::toRoute(['/site/confirm-email','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
 
         Yii::$app->mailer->compose()
                 ->setTo($user->email)

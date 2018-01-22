@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -15,7 +16,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?php Modal::begin([
+            'header' => '<h2>'.Yii::t('app', 'Create User').'</h2>',
+            'toggleButton' => ['label' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary'],
+        ]);
+
+        echo $this->render('update', [
+            'model' => $model,
+        ]);
+
+        Modal::end(); ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
@@ -32,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'password_hash',
             'email:email',
+            'email_confirmed:boolean',
             'active:boolean',
             'created',
             'last_visit',

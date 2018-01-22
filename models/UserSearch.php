@@ -20,7 +20,7 @@ class UserSearch extends User
         return [
             [['id'], 'integer'],
             [['username', 'password_hash', 'email', 'created', 'last_visit'], 'safe'],
-            [['active'], 'boolean'],
+            [['active', 'email_confirmed'], 'boolean'],
         ];
     }
 
@@ -62,6 +62,7 @@ class UserSearch extends User
         $query->andFilterWhere([
             'id' => $this->id,
             'active' => $this->active,
+            'email_confirmed' => $this->email_confirmed,
             'created' => $this->created,
             'last_visit' => $this->last_visit,
         ]);

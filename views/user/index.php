@@ -30,11 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         Modal::end(); ?>
 
         <?php Modal::begin([
-            'id' => 'edit-user-container',
+            'id' => 'edit-user-modal',
             'header' => '<h2>'.Yii::t('app', 'Edit User').'</h2>',
             'toggleButton' => false,
-            'clientOptions' => false,
         ]); ?>
+
+        <div id="edit-user-container"></div>
 
         <?php Modal::end(); ?>
     </p>
@@ -59,11 +60,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'update' => function($url, $model, $key) {
                         $title = Yii::t('yii', 'Update');
                         $options = [
+                            'class' => 'update-edit-user-container',
                             'title' => $title,
                             'aria-label' => $title,
                             'data-pjax' => '0',
-                            'data-target' => '#edit-user-container',
-                            'data-toggle' => 'modal'
                         ];
                         $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-pencil"]);
                         return Html::a($icon,$url,$options);
@@ -76,16 +76,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 $js = <<<JS
-$(document).on('hidden.bs.modal', '.modal', function () {
-  var modalData = $(this).data('bs.modal');
-
-  // Destroy modal if has remote source – don't want to destroy modals with static content.
-  if (modalData && modalData.options.remote) {
-    // Destroy component. Next time new component is created and loads fresh content
-    $(this).removeData('bs.modal');
-    // Also clear loaded content, otherwise it would flash before new one is loaded.
-    $(this).find(".modal-content").empty();
+$(document).on('click', 'a.update-edit-user-container', function () {
+  $.ajax({
+  url: this.href,
+  success: function( data ) {
+    $('#edit-user-container').html(data);
+    $('#edit-user-modal').modal('show');
+  },
+  error: function() {
+    alert('Check connection to server');
   }
+  });
+  return false;
 });
 JS;
 $this->registerJs($js)

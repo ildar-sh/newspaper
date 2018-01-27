@@ -70,7 +70,7 @@ class UserController extends Controller
             return $this->redirect(['index']);
         }
 
-        return $this->render('_form', [
+        return $this->render('create', [
             'model' => $model,
         ]);
     }
@@ -90,9 +90,15 @@ class UserController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('update', [
+                'model' => $model,
+            ]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**

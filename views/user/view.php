@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?php Modal::begin([
-            'header' => '<h2>'.Yii::t('app', 'Create User').'</h2>',
+            'header' => '<h2>'.Yii::t('app', 'Update User').'</h2>',
             'toggleButton' => ['label' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary'],
         ]);
 

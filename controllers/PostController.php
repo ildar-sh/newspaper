@@ -8,6 +8,7 @@ use app\models\PostSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -70,19 +71,18 @@ class PostController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->image_file = UploadedFile::getInstance($model, 'image_file');
             if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         }
 
         if (Yii::$app->request->isAjax) {
-            return $this->renderAjax('create', [
-                'model' => $model,
-            ]);
+            $renderMethod = 'renderAjax';
         } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+            $renderMethod = 'render';
         }
+        return $this->$renderMethod('create', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -99,19 +99,18 @@ class PostController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->image_file = UploadedFile::getInstance($model, 'image_file');
             if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         }
 
         if (Yii::$app->request->isAjax) {
-            return $this->renderAjax('update', [
-                'model' => $model,
-            ]);
+            $renderMethod = 'renderAjax';
         } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+            $renderMethod = 'render';
         }
+        return $this->$renderMethod('update', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -145,5 +144,19 @@ class PostController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    public function actionActivate($id, $status)
+    {
+        $model = $this->findModel($id);
+        $model->active = $status == 'true';
+        if ($model->save()) {
+            return 'Ok';
+        } else {
+            $response = new Response();
+            $response->setStatusCode(500);
+            $response->data = print_r($model->getFirstErrors(), true);
+            return $response;
+        }
     }
 }

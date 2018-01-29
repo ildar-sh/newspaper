@@ -10,6 +10,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\RegisterForm;
+use app\models\Post;
+use yii\data\Pagination;
 
 class SiteController extends Controller
 {
@@ -56,13 +58,21 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $query = Post::find()->active();
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count()]);
+        $models = $query->offset($pages->offset)
+            ->limit($pages->limit)
+            ->all();
+
+        return $this->render('index', [
+            'models' => $models,
+            'pages' => $pages,
+        ]);
     }
 
     /**

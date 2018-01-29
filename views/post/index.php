@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\bootstrap\Modal;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PostSearch */
@@ -39,7 +40,21 @@ $this->params['breadcrumbs'][] = $this->title;
             //'image',
             //'short_text:ntext',
             //'long_text:ntext',
-            'active:boolean',
+            [
+                'attribute' => 'active',
+                'format' => 'boolean',
+                'content' => function ($model, $key, $index, $column) {
+                    $options = [
+                        'class' => 'post-active',
+                        'type' => 'checkbox',
+                        'name' => 'active',
+                        'checked' => $model->active,
+                        'value' => $key,
+                    ];
+                    return Html::tag('input', null, $options);
+                }
+            ],
+            //'active:boolean',
             'created',
             //'author_id',
 
@@ -64,32 +79,51 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
+$activatePostUrl = Url::to(['activate']);
 $js = <<<JS
 $(document).on('click', 'a.load-update-form-to-edit-post-container', function () {
-  $.ajax({
-  url: this.href,
-  success: function( data ) {
-    $('#edit-post-container').html(data);
-    $('#edit-post-modal').modal('show');
-  },
-  error: function() {
-    alert('Check connection to the server');
-  }
-  });
-  return false;
+    $.ajax({
+        url: this.href,
+        success: function( data ) {
+                $('#edit-post-container').html(data);
+                $('#edit-post-modal').modal('show');
+            },
+        error: function() {
+                alert('Check connection to the server');
+            }
+    });
+    return false;
 });
+
 $(document).on('click', '.load-create-form-to-edit-post-container', function () {
-  $.ajax({
-  url: this.href,
-  success: function( data ) {
-    $('#edit-post-container').html(data);
-    $('#edit-post-modal').modal('show');
-  },
-  error: function() {
-    alert('Check connection to the server');
-  }
-  });
-  return false;
+    $.ajax({
+        url: this.href,
+        success: function( data ) {
+                $('#edit-post-container').html(data);
+                $('#edit-post-modal').modal('show');
+            },
+        error: function() {
+                alert('Check connection to the server');
+            }
+    });
+    return false;
+});
+
+$(document).on('change', ':checkbox.post-active', function () {
+    var previousState = !this.checked;
+    var checkbox = this;
+    $.ajax({
+        url: '$activatePostUrl',
+        data: {
+            id : this.value,
+            status : this.checked
+        },
+        error: function() {
+                checkbox.checked = previousState;
+                alert('Check connection to the server');
+            }
+        }
+    );
 });
 JS;
 $this->registerJs($js)

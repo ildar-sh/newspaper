@@ -1,53 +1,56 @@
 <?php
 
+use yii\widgets\LinkPager;
+use yii\bootstrap\Html;
+
 /* @var $this yii\web\View */
+/* @var $pages \yii\data\Pagination */
+/* @var $models \app\models\Post[] */
 
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Congratulations!</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+        <h1>Hottest news!</h1>
     </div>
 
     <div class="body-content">
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+        <ul class="media-list">
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+            <?php foreach ($models as $model) : ?>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+            <li class="media">
+                <div class="media-left">
+                    <?= Html::img($model->image, ['width' => 200]) ?>
+                </div>
+                <div class="media-body">
+                    <?= Html::tag('h2', $model->name, ['class' => 'media-heading']) ?>
+                    <?= Html::tag('p', $model->short_text) ?>
+                    <?= Html::a(Yii::t('app', 'Full text'), ['full',['id' => $model->id]], ['class' => 'btn btn-primary']) ?>
+                </div>
+            </li>
+
+            <?php endforeach; ?>
+
+        </ul>
+
+        <?= LinkPager::widget([
+            'pagination' => $pages,
+        ]);
+        ?>
+
+        <?= Html::beginForm([''],'get',['class'=>"form-inline"]); ?>
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Post per page</span>
+                <?= Html::input('text', 'per-page', $pages->pageSize, ['class' => "form-control", 'aria-describedby' => "basic-addon1"]); ?>
             </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+            <?= Html::input('hidden', 'page', $pages->page + 1, ['class' => "form-control"]); ?>
+            <?= Html::input('submit', 'update', Yii::t('app', 'Update'), ['class' => "btn btn-primary"]); ?>
         </div>
+        <?= Html::endForm(); ?>
 
     </div>
 </div>

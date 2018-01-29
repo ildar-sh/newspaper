@@ -9,10 +9,10 @@ namespace app\models;
  */
 class PostQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function active()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere('[[active]]=true');
+    }
 
     /**
      * @inheritdoc

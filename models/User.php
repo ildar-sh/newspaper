@@ -184,6 +184,8 @@ class User extends ActiveRecord implements IdentityInterface
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
                 $this->auth_key = Yii::$app->security->generateRandomString();
+                $this->email_confirmed = false;
+                $this->generateConfirmationCode();
             }
             return true;
         }
@@ -223,17 +225,23 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password = $password;
         $this->email = $email;
         $this->active = true;
-        $this->email_confirmed = false;
-        $this->generateConfirmationCode();
 
-        if ($this->save(false)) {
-            $event = new Event();
+        return $this->save(false);
+    }
 
-            $this->trigger(self::EVENT_IS_REGISTERED, $event);
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
 
-            return true;
-        } else {
-            return false;
+        if ($insert) {
+            if ($this->password_hash) {
+                // user registered
+                $this->trigger(self::EVENT_IS_REGISTERED, new Event());
+            } else {
+                // user created by admin
+                $this->trigger(self::EVENT_IS_CREATED_BY_ADMIN, new Event());
+            }
         }
     }
+
 }

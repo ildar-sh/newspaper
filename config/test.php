@@ -15,6 +15,7 @@ return [
     'language' => 'en-US',
     'bootstrap' => [
         'app\components\UserRemainder',
+        'app\components\VisitLogger',
     ],
     'components' => [
         'db' => $db,

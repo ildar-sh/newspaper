@@ -52,7 +52,7 @@ class ConfirmEmailForm extends Model
         if ($this->validate()) {
             $user = $this->getUser();
             $user->confirmEmail();
-            $user->save(); // TODO remove after implementing EVENT_AFTER_LOGIN in which "user.last_seen" is updated
+            //$user->save(); // TODO remove after implementing EVENT_AFTER_LOGIN in which "user.last_seen" is updated
             return Yii::$app->user->login($user); // TODO autologin by confirmation code convenient, but manual login is more safe?
         }
         return false;

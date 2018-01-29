@@ -9,6 +9,7 @@ $config = [
     'bootstrap' => [
         'log',
         'app\components\UserRemainder',
+        'app\components\VisitLogger',
     ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',

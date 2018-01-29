@@ -21,9 +21,9 @@ class UserRemainder extends BaseObject
     public function init()
     {
         Event::on(User::className(), User::EVENT_IS_REGISTERED, [$this, 'sendConfirmationCode']);
+        Event::on(User::className(), User::EVENT_IS_CREATED_BY_ADMIN, [$this, 'sendConfirmationAndResetPasswordCode']);
         parent::init();
     }
-
 
     public function sendConfirmationCode(Event $event)
     {
@@ -33,13 +33,39 @@ class UserRemainder extends BaseObject
         $user = $event->sender;
 
         $confirmationCode = $user->getConfirmationCode();
+        // todo add description text
         $text = Url::toRoute(['/site/confirm-email','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
 
-        Yii::$app->mailer->compose()
-                ->setTo($user->email)
-                ->setFrom($this->emailFrom)
-                ->setSubject('Activation url')
-                ->setTextBody($text)
-                ->send();
+        $this->sendMessage($user->email, 'Activation url', $text);
+    }
+
+    public function sendConfirmationAndResetPasswordCode(Event $event)
+    {
+        /**
+         * @var $user \app\models\User
+         */
+        $user = $event->sender;
+
+        $confirmationCode = $user->getConfirmationCode();
+        // todo add description text
+        $text = Url::toRoute(['/site/confirm-email','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
+
+        $this->sendMessage($user->email, 'Activation url for ' . $user->username, $text);
+    }
+
+    protected function sendMessage($to, $subject, $text)
+    {
+        $isMessageSent = Yii::$app->mailer->compose()
+            ->setTo($to)
+            ->setFrom($this->emailFrom)
+            ->setSubject('Activation url')
+            ->setTextBody($text)
+            ->send();
+
+        if ($isMessageSent) {
+            Yii::$app->session->setFlash('info', "The $subject is sent");
+        } else {
+            Yii::$app->session->setFlash('error', 'It isn\'t possible to send the message, check the email');
+        }
     }
 }

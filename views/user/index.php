@@ -84,7 +84,7 @@ $(document).on('click', 'a.update-edit-user-container', function () {
     $('#edit-user-modal').modal('show');
   },
   error: function() {
-    alert('Check connection to server');
+    alert('Check connection to the server');
   }
   });
   return false;

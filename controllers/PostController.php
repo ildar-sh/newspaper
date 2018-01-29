@@ -74,9 +74,15 @@ class PostController extends Controller
             }
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('create', [
+                'model' => $model,
+            ]);
+        } else {
+            return $this->render('create', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**
@@ -97,9 +103,15 @@ class PostController extends Controller
             }
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('update', [
+                'model' => $model,
+            ]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
 
     /**

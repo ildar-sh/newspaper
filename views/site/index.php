@@ -26,9 +26,9 @@ $this->title = 'My Yii Application';
                     <?= Html::img($model->image, ['width' => 200]) ?>
                 </div>
                 <div class="media-body">
-                    <?= Html::tag('h2', $model->name, ['class' => 'media-heading']) ?>
-                    <?= Html::tag('p', $model->short_text) ?>
-                    <?= Html::a(Yii::t('app', 'Full text'), ['full',['id' => $model->id]], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::tag('h2', Html::encode($model->name), ['class' => 'media-heading']) ?>
+                    <?= Html::tag('p', Html::encode($model->short_text)) ?>
+                    <?= Html::a(Yii::t('app', 'Full text'), ['post/full', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
                 </div>
             </li>
 

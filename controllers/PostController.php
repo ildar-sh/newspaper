@@ -159,4 +159,10 @@ class PostController extends Controller
             return $response;
         }
     }
+
+    public function actionFull($id)
+    {
+        $model = $this->findModel($id);
+        return $this->render('full', ['model' => $model]);
+    }
 }

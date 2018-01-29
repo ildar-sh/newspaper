@@ -47,8 +47,6 @@ class UserTest extends \Codeception\Test\Unit
     public function testActivateUser($user)
     {
         expect($user->username)->equals('test');
-        expect_not($user->active);
-        $user->active = true;
         expect_that($user->active);
     }
 

@@ -186,6 +186,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $this->auth_key = Yii::$app->security->generateRandomString();
                 $this->email_confirmed = false;
                 $this->generateConfirmationCode();
+                $this->active = true;
             }
             return true;
         }
@@ -224,7 +225,6 @@ class User extends ActiveRecord implements IdentityInterface
         $this->username = $username;
         $this->password = $password;
         $this->email = $email;
-        $this->active = true;
 
         return $this->save(false);
     }

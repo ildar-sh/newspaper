@@ -87,6 +87,7 @@ class SiteController extends Controller
     public function actionConfirmEmail()
     {
         $model = new ConfirmEmailForm();
+        $model->scenario = ConfirmEmailForm::SCENARIO_CONFIRM;
 
         if (!Yii::$app->request->isPost) {
             $dataLoaded = $model->load(Yii::$app->request->get());
@@ -95,6 +96,23 @@ class SiteController extends Controller
         }
 
         if ($dataLoaded && $model->confirmEmailAndLogin()) {
+            Yii::$app->session->addFlash('Email confirmed');
+            return $this->goHome();
+        }
+
+        return $this->render('confirmEmail', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionConfirmEmailAndSetPassword()
+    {
+        $model = new ConfirmEmailForm();
+        $model->scenario = ConfirmEmailForm::SCENARIO_CONFIRM_AND_SET_PASSWORD;
+
+        $model->load(Yii::$app->request->get());
+
+        if ($model->load(Yii::$app->request->post()) && $model->confirmEmailAndLogin()) {
             Yii::$app->session->addFlash('Email confirmed');
             return $this->goHome();
         }

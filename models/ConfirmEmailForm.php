@@ -13,7 +13,12 @@ use yii\base\Model;
 
 class ConfirmEmailForm extends Model
 {
+    const SCENARIO_CONFIRM = 'confirm';
+    const SCENARIO_CONFIRM_AND_SET_PASSWORD = 'confirmAndSetPassword';
+
     public $confirmation_code;
+    public $password;
+    public $repeatPassword;
 
     private $_user = false;
 
@@ -24,9 +29,18 @@ class ConfirmEmailForm extends Model
     {
         return [
             // access_token required
-            [['confirmation_code'], 'required'],
+            [['confirmation_code','password','repeatPassword'], 'required'],
             // password is validated by validatePassword()
             ['confirmation_code', 'validateConfirmationCode'],
+            ['repeatPassword', 'compare', 'compareAttribute' => 'password'],
+        ];
+    }
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_CONFIRM => ['confirmation_code'],
+            self::SCENARIO_CONFIRM_AND_SET_PASSWORD => ['confirmation_code','password','repeatPassword']
         ];
     }
 
@@ -51,9 +65,24 @@ class ConfirmEmailForm extends Model
     {
         if ($this->validate()) {
             $user = $this->getUser();
-            $user->confirmEmail();
-            //$user->save(); // TODO remove after implementing EVENT_AFTER_LOGIN in which "user.last_seen" is updated
-            return Yii::$app->user->login($user); // TODO autologin by confirmation code convenient, but manual login is more safe?
+            if ($user) {
+                if ($user->password_hash) {
+                    $user->confirmEmail();
+                } else {
+                    if($this->password) {
+                        $user->setPassword($this->password);
+                        $user->confirmEmail();
+                    } else {
+                        return false;
+                    }
+                }
+
+
+                //$user->save(); // TODO remove after implementing EVENT_AFTER_LOGIN in which "user.last_seen" is updated
+                return Yii::$app->user->login($user); // TODO autologin by confirmation code convenient, but manual login is more safe?
+            } else {
+                return false;
+            }
         }
         return false;
     }

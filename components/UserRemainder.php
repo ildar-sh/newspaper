@@ -48,7 +48,7 @@ class UserRemainder extends BaseObject
 
         $confirmationCode = $user->getConfirmationCode();
         // todo add description text
-        $text = Url::toRoute(['/site/confirm-email','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
+        $text = Url::toRoute(['/site/confirm-email-and-set-password','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
 
         $this->sendMessage($user->email, 'Activation url for ' . $user->username, $text);
     }
@@ -64,6 +64,7 @@ class UserRemainder extends BaseObject
 
         if ($isMessageSent) {
             Yii::$app->session->setFlash('info', "The $subject is sent");
+            Yii::$app->session->setFlash('info', $text); // todo убрать
         } else {
             Yii::$app->session->setFlash('error', 'It isn\'t possible to send the message, check the email');
         }

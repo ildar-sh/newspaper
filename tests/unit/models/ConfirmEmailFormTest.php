@@ -32,6 +32,7 @@ class ConfirmEmailFormTest extends \Codeception\Test\Unit
     public function testEmptyCode()
     {
         $model = new ConfirmEmailForm();
+        $model->scenario = ConfirmEmailForm::SCENARIO_CONFIRM;
 
         expect_not($model->confirmEmailAndLogin());
         expect_that(\Yii::$app->user->isGuest);
@@ -43,6 +44,7 @@ class ConfirmEmailFormTest extends \Codeception\Test\Unit
         $model = new ConfirmEmailForm([
             'confirmation_code' => 'abvgd'
         ]);
+        $model->scenario = ConfirmEmailForm::SCENARIO_CONFIRM;
 
         expect_not($model->confirmEmailAndLogin());
         expect_that(\Yii::$app->user->isGuest);
@@ -64,6 +66,8 @@ class ConfirmEmailFormTest extends \Codeception\Test\Unit
         $model = new ConfirmEmailForm([
             'confirmation_code' => $user1->getConfirmationCode(),
         ]);
+
+        $model->scenario = ConfirmEmailForm::SCENARIO_CONFIRM;
 
         $this->assertEquals(true, $result = $model->confirmEmailAndLogin(), print_r([
             'result' => $result,

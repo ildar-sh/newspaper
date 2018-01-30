@@ -26,6 +26,33 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
+<?php
+$navBarItems = [
+    ['label' => 'Home', 'url' => ['/site/index']],
+];
+
+if (Yii::$app->user->isGuest) {
+    $navBarItems = array_merge($navBarItems, [
+        ['label' => 'Login', 'url' => ['/site/login']]
+    ]);
+} else {
+    $navBarItems = array_merge($navBarItems, [
+        ['label' => 'Users', 'url' => ['/user/index']],
+        ['label' => 'Posts', 'url' => ['/post/index']],
+        ['label' => 'Profile', 'url' => ['/site/profile']],
+        '<li>'
+        . Html::beginForm(['/site/logout'], 'post')
+        . Html::submitButton(
+            'Logout (' . Yii::$app->user->identity->username . ')',
+            ['class' => 'btn btn-link logout']
+        )
+        . Html::endForm()
+        . '</li>'
+    ]);
+}
+
+?>
+
 <div class="wrap">
     <?php
     NavBar::begin([
@@ -37,23 +64,7 @@ AppAsset::register($this);
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Users', 'url' => ['/user/index']],
-            ['label' => 'Posts', 'url' => ['/post/index']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $navBarItems
     ]);
     NavBar::end();
     ?>

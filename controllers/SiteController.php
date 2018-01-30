@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\ConfirmEmailForm;
+use app\models\UserProfileForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -162,6 +163,12 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionProfile()
+    {
+        $userProfile = new UserProfileForm(Yii::$app->user->getIdentity());
+        return $this->render('profile', ['model' => $userProfile]);
     }
 
 }

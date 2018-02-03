@@ -71,6 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['username','email','role'], 'required'],
             [['role'], 'string', 'max' => 15],
+            ['role', 'default', 'value' => self::DEFAULT_ROLE],
         ];
     }
 
@@ -202,7 +203,6 @@ class User extends ActiveRecord implements IdentityInterface
                 $this->email_confirmed = false;
                 $this->generateConfirmationCode();
                 $this->active = true;
-                $this->role = self::DEFAULT_ROLE;
             }
             return true;
         }

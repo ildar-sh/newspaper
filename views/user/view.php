@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'username',
-            'password_hash',
+            'role',
             'email:email',
             'email_confirmed:boolean',
             'active:boolean',

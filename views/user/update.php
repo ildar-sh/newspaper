@@ -22,8 +22,8 @@ use yii\widgets\Pjax;
     <?= $form->field($model, 'email_confirmed')->checkbox() ?>
 
     <?= $form->field($model, 'active')->checkbox() ?>
-    
-    <?= $form->field($model, 'role')->dropDownList($model->roles) ?>
+
+    <?= $form->field($model, 'role')->dropDownList(array_combine($model->roles, $model->roles)) ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

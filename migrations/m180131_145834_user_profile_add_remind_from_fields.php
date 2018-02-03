@@ -30,19 +30,4 @@ class m180131_145834_user_profile_add_remind_from_fields extends Migration
         $this->addColumn(User::tableName(), 'receive_events_by_alert', $this->boolean()->notNull()->defaultValue(true));
 
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m180131_145834_user_profile_add_remind_from_fields cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

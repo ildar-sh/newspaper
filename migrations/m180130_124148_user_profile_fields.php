@@ -25,19 +25,4 @@ class m180130_124148_user_profile_fields extends Migration
         $this->dropColumn(User::tableName(), 'receive_events_by_email');
         $this->dropColumn(User::tableName(), 'receive_events_by_alert');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m180130_124148_user_profile_fields cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

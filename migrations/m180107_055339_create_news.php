@@ -25,10 +25,6 @@ class m180107_055339_create_news extends Migration
             'last_visit' => $this->dateTime(),
         ]);
 
-        $this->batchInsert('user', ['id','username', 'password_hash', 'active'], [
-            [100,'admin',\Yii::$app->security->generatePasswordHash('admin'),true],
-        ]);
-
         $this->createTable('post', [
             'id' => $this->primaryKey(),
             'name' => $this->string(256),
@@ -76,19 +72,4 @@ class m180107_055339_create_news extends Migration
         $this->dropTable('post');
         $this->dropTable('user');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m180107_055339_create_news cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

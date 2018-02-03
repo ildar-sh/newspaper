@@ -78,19 +78,4 @@ class m180131_150611_post_view extends Migration
 
         $this->dropTable('post_view');
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m180131_150611_user_viewed_events cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }

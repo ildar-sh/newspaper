@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Post */
@@ -18,3 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Html::tag('p', Html::encode($model->long_text)) ?>
 
 </div>
+
+<?php
+$markPostAsReadUrl = Url::to(['mark-as-read', 'id' => $model->id]);
+$js = <<<JS
+$.ajax({
+    url: '$markPostAsReadUrl'
+});
+JS;
+$this->registerJs($js)
+?>

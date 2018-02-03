@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\FlashTransport;
 use Yii;
 use app\models\Post;
 use app\models\PostSearch;
@@ -164,5 +165,14 @@ class PostController extends Controller
     {
         $model = $this->findModel($id);
         return $this->render('full', ['model' => $model]);
+    }
+
+    public function actionMarkAsRead($id)
+    {
+        $post = $this->findModel($id);
+        if (!Yii::$app->user->isGuest) {
+            $transport = new FlashTransport();
+            $transport->markAsViewed($post, Yii::$app->user->getId());
+        }
     }
 }

@@ -13,6 +13,7 @@ use yii\base\BaseObject;
 use yii\base\Event;
 use app\models\User;
 use yii\helpers\Url;
+use yii\web\Response;
 
 class UserRemainder extends BaseObject
 {
@@ -36,7 +37,14 @@ class UserRemainder extends BaseObject
         // todo add description text
         $text = Url::toRoute(['/site/confirm-email','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
 
-        $this->sendMessage($user->email, 'Activation url', $text);
+//        Yii::$app->response->on(
+//            Response::EVENT_AFTER_SEND,
+//            [$this, 'sendMessage'],
+//            ['email' => $user->email, 'subject' => 'Activation url', 'message' => $text]
+//        );
+        $event = new Event();
+        $event->data = ['email' => $user->email, 'subject' => 'Activation url', 'message' => $text];
+        $this->sendMessage($event);
     }
 
     public function sendConfirmationAndResetPasswordCode(Event $event)
@@ -50,23 +58,41 @@ class UserRemainder extends BaseObject
         // todo add description text
         $text = Url::toRoute(['/site/confirm-email-and-set-password','ConfirmEmailForm[confirmation_code]' => $confirmationCode], true);
 
-        $this->sendMessage($user->email, 'Activation url for ' . $user->username, $text);
+//        Yii::$app->response->on(
+//            Response::EVENT_AFTER_SEND,
+//            [$this, 'sendMessage'],
+//            ['email' => $user->email, 'subject' => 'Activation url for ' . $user->username, 'message' => $text]
+//        );
+        $event = new Event();
+        $event->data = ['email' => $user->email, 'subject' => 'Activation url for ' . $user->username, 'message' => $text];
+        $this->sendMessage($event);
     }
 
-    protected function sendMessage($to, $subject, $text)
+    public function sendMessage(Event $event)
     {
+        $to = $event->data['email'];
+        $subject = $event->data['subject'];
+        $text = $event->data['message'];
+
+        $this->releaseUserConnection();
+
         $isMessageSent = Yii::$app->mailer->compose()
             ->setTo($to)
             ->setFrom($this->emailFrom)
-            ->setSubject('Activation url')
+            ->setSubject($subject)
             ->setTextBody($text)
             ->send();
 
         if ($isMessageSent) {
-            Yii::$app->session->setFlash('info', "The $subject is sent");
-            Yii::$app->session->setFlash('info', $text); // todo убрать
+            Yii::info("The $subject is sent to $to");
         } else {
-            Yii::$app->session->setFlash('error', 'It isn\'t possible to send the message, check the email');
+            Yii::error("Isn't possible to send the message $subject, to $to");
         }
+    }
+
+    protected function releaseUserConnection()
+    {
+//        Yii::$app->session->close();
+//        YII_DEBUG ? fastcgi_finish_request() : @fastcgi_finish_request();
     }
 }

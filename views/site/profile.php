@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $form->field($model, 'newPassword')->passwordInput() ?>
         <?= $form->field($model, 'repeatNewPassword')->passwordInput() ?>
 
+        <?= $form->field($model, 'newsByEmail')->checkbox() ?>
+        <?= $form->field($model, 'newsByFlash')->checkbox() ?>
+
         <?= $form->field($model, 'password')->passwordInput() ?>
 
         <div class="form-group">

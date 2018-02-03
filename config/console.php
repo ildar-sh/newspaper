@@ -21,6 +21,13 @@ $config = [
             ],
         ],
         'db' => $db,
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => true,
+        ],
     ],
     'params' => $params,
     /*
@@ -30,6 +37,15 @@ $config = [
         ],
     ],
     */
+    'container' => [
+        'definitions' => [
+            'app\commands\NewsController' => [
+                'emailFrom' => 'no-replay@newspaper.com',
+            ],
+        ],
+        'singletons' => [
+        ]
+    ],
 ];
 
 if (YII_ENV_DEV) {

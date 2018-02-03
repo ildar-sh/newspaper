@@ -2,13 +2,31 @@
 
 use yii\widgets\LinkPager;
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $pages \yii\data\Pagination */
 /* @var $models \app\models\Post[] */
+/* @var $newPosts \app\models\Post[] */
 
 $this->title = 'My Yii Application';
 ?>
+
+<?php
+$message = '';
+
+foreach ($newPosts as $newPost) {
+    echo \yii\bootstrap\Alert::widget([
+        'body' => 'New post ' . Html::a('"' . $newPost->name . '"',['post/full', 'id' => $newPost->id],['class' => 'alert-link']),
+        'options' => [
+            'id' => 'news-' . $newPost->id,
+            'class' => 'new-post alert-info',
+            'data-post-id' => $newPost->id,
+        ],
+    ]);
+}
+?>
+
 <div class="site-index">
 
     <div class="jumbotron">
@@ -54,3 +72,18 @@ $this->title = 'My Yii Application';
 
     </div>
 </div>
+
+<?php
+$markPostAsReadUrl = Url::to(['post/mark-as-read']);
+$js = <<<JS
+$('.new-post').on('closed.bs.alert', function () {
+    $.ajax({
+        url: '$markPostAsReadUrl',
+        data: {
+            id: $(this).data('post-id')
+        }
+    });
+});
+JS;
+$this->registerJs($js)
+?>

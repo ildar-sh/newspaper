@@ -20,7 +20,7 @@ use yii\web\UploadedFile;
  *
  * @property User $author
  */
-class Post extends \yii\db\ActiveRecord
+class Post extends \yii\db\ActiveRecord implements CanBeViewed
 {
     /**
      * @var UploadedFile
@@ -134,5 +134,21 @@ class Post extends \yii\db\ActiveRecord
         }
     }
 
+    public function markAsViewed($user_id, $transport)
+    {
+        $postView = new PostView();
+        $postView->post_id = $this->id;
+        $postView->user_id = $user_id;
+        $postView->transport = $transport;
+        $postView->save(false);
+    }
 
+    public function getNewFor($userId, $transport,\DateTime $dateFrom, $limit)
+    {
+        $subQuery = PostView::find()->select('post_id')->where([
+            'user_id' => $userId,
+            'transport' => $transport
+        ]);
+        return $this->find()->active()->newerThan($dateFrom)->andWhere(['not in', 'id', $subQuery])->limit($limit)->all();
+    }
 }

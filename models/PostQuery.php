@@ -14,6 +14,11 @@ class PostQuery extends \yii\db\ActiveQuery
         return $this->andWhere('[[active]]=true');
     }
 
+    public function newerThan(\DateTime $dateFrom)
+    {
+        return $this->andWhere(['>=', 'created', $dateFrom->format(\DateTime::ISO8601)]);
+    }
+
     /**
      * @inheritdoc
      * @return Post[]|array

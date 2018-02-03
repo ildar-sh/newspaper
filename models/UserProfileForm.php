@@ -15,6 +15,8 @@ class UserProfileForm extends Model
     public $password;
     public $newPassword;
     public $repeatNewPassword;
+    public $newsByEmail;
+    public $newsByFlash;
 
     protected $user;
 
@@ -23,6 +25,8 @@ class UserProfileForm extends Model
         $this->user = $user;
         $this->email = $user->email;
         $this->username = $user->username;
+        $this->newsByEmail = $user->getNewsByEmail();
+        $this->newsByFlash = $user->getNewsByFlash();
         parent::__construct($config);
     }
 
@@ -34,12 +38,30 @@ class UserProfileForm extends Model
     {
         return [
             [['password'], 'required', 'message' => 'Current password required to save changes'],
+            ['newPassword', 'compare', 'compareAttribute' => 'repeatNewPassword'],
             ['repeatNewPassword', 'compare', 'compareAttribute' => 'newPassword'],
+            [['newsByEmail', 'newsByFlash'], 'boolean'],
         ];
     }
 
     public function getUser()
     {
         return $this->user;
+    }
+
+    public function save()
+    {
+        $user = $this->getUser();
+        if ($user->validatePassword($this->password)) {
+            if (!empty($this->newPassword)) {
+                $user->setPassword($this->newPassword);
+            }
+            $user->setNewsByEmail($this->newsByEmail);
+            $user->setNewsByFlash($this->newsByFlash);
+            return $user->save(false);
+        } else {
+            $this->addError('password', 'Password is incorrect');
+        }
+        return false;
     }
 }

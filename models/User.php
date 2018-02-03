@@ -21,6 +21,8 @@ use Yii;
  * @property bool $active
  * @property string $created
  * @property string $last_visit
+ * @property string $receive_events_by_email_from_datetime
+ * @property string $receive_events_by_alert_from_datetime
  *
  * @property Post[] $posts
  */
@@ -244,4 +246,35 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
+    public function getNewsByFlash()
+    {
+        $newsByFlashFrom = $this->receive_events_by_alert_from_datetime;
+        return !is_null($newsByFlashFrom);
+    }
+
+    public function setNewsByFlash($value)
+    {
+        if ($value) {
+            $now = new \DateTime();
+            $this->receive_events_by_alert_from_datetime = $now->format(\DateTime::ISO8601);
+        }  else {
+            $this->receive_events_by_alert_from_datetime = null;
+        }
+    }
+
+    public function getNewsByEmail()
+    {
+        $newsByEmailFrom = $this->receive_events_by_email_from_datetime;
+        return !is_null($newsByEmailFrom);
+    }
+
+    public function setNewsByEmail($value)
+    {
+        if ($value) {
+            $now = new \DateTime();
+            $this->receive_events_by_email_from_datetime = $now->format(\DateTime::ISO8601);
+        }  else {
+            $this->receive_events_by_email_from_datetime = null;
+        }
+    }
 }

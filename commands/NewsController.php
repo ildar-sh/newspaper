@@ -10,7 +10,6 @@ namespace app\commands;
 
 use app\components\EmailTransport;
 use Yii;
-use yii\bootstrap\Html;
 use yii\console\Controller;
 use app\models\Post;
 use app\models\User;

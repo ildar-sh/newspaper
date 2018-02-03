@@ -23,11 +23,23 @@ use Yii;
  * @property string $last_visit
  * @property string $receive_events_by_email_from_datetime
  * @property string $receive_events_by_alert_from_datetime
+ * @property string $role
  *
  * @property Post[] $posts
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const ROLE_USER = 'user';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_ADMIN = 'admin';
+    const DEFAULT_ROLE = self::ROLE_USER;
+
+    public $roles = [
+        self::ROLE_USER,
+        self::ROLE_MANAGER,
+        self::ROLE_ADMIN,
+    ];
+
     /**
      * @event Event an event that is triggered when the user registered.
      */
@@ -57,7 +69,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['username'], 'unique'],
             [['email'], 'email'],
             [['email'], 'unique'],
-            [['username','email'], 'required'],
+            [['username','email','role'], 'required'],
+            [['role'], 'string', 'max' => 15],
         ];
     }
 
@@ -189,6 +202,7 @@ class User extends ActiveRecord implements IdentityInterface
                 $this->email_confirmed = false;
                 $this->generateConfirmationCode();
                 $this->active = true;
+                $this->role = self::DEFAULT_ROLE;
             }
             return true;
         }

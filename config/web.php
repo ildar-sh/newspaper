@@ -16,6 +16,9 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'authManager' => [
+            'class' => 'app\components\CustomManager',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'pdqvMii7Bdf6bNLpXEDEteSDSo5LfFzn',
@@ -35,7 +38,16 @@ $config = [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => true,
+            // 'useFileTransport' => true,
+            'transport' => [
+                'class' => Swift_SmtpTransport::class,
+                'host' => 'smtp.gmail.com',
+                'username' => 'username',
+                'password' => 'password',
+                'port' => '587',
+                'encryption' => 'tls',
+            ],
+
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -72,7 +84,7 @@ if (YII_ENV_DEV) {
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        'allowedIPs' => ['109.238.244.74', '127.0.0.1', '::1'],
+        //'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
     $config['bootstrap'][] = 'gii';

@@ -11,6 +11,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\filters\AccessControl;
+use yii\web\ForbiddenHttpException;
 
 /**
  * PostController implements the CRUD actions for Post model.
@@ -29,6 +31,37 @@ class PostController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'full', 'mark-as-read', 'create'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['managePost'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['view', 'full', 'mark-as-read'],
+                        'roles' => ['viewPost'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
+                        'roles' => ['createPost'],
+                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['update','activate'],
+//                        'roles' => ['updatePost'],
+//                    ],
+//                    [
+//                        'allow' => true,
+//                        'actions' => ['delete'],
+//                        'roles' => ['deletePost'],
+//                    ],
+                ],
+            ]
         ];
     }
 
@@ -95,7 +128,7 @@ class PostController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, 'updatePost');
 
         if ($model->load(Yii::$app->request->post())) {
             $model->image_file = UploadedFile::getInstance($model, 'image_file');
@@ -123,7 +156,7 @@ class PostController extends Controller
      */
     public function actionDelete($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, 'deletePost');
         if (!$model->delete()) {
             Yii::$app->session->setFlash('error', implode('<br/>', $model->getFirstErrors()));
         }
@@ -135,13 +168,23 @@ class PostController extends Controller
      * Finds the Post model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
+     * @param string $permission
      * @return Post the loaded model
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws ForbiddenHttpException if the user not allowed to perform $permission on the model
      */
-    protected function findModel($id)
+    protected function findModel($id, $permission = null)
     {
         if (($model = Post::findOne($id)) !== null) {
-            return $model;
+            if ($permission) {
+                if (\Yii::$app->user->can($permission, ['post' => $model])) {
+                    return $model;
+                } else {
+                    throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
+                }
+            } else {
+                return $model;
+            }
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
@@ -149,7 +192,8 @@ class PostController extends Controller
 
     public function actionActivate($id, $status)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id, 'updatePost');
+
         $model->active = $status == 'true';
         if ($model->save()) {
             return 'Ok';

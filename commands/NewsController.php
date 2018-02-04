@@ -61,7 +61,7 @@ class NewsController extends Controller
     protected function createStringAbout(Post $post)
     {
         // TODO
-        return $post->name . Url::to(['post/full', 'id' => $post->id], true);
+        return $post->name . ' ' . Url::to(['post/full', 'id' => $post->id], true);
     }
 
     protected function sendMessage($to, $subject, $text)

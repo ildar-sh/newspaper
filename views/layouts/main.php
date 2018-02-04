@@ -38,7 +38,7 @@ if (Yii::$app->user->isGuest) {
 } else {
     $navBarItems = array_merge($navBarItems, [
         ['label' => 'Users', 'url' => ['/user/index'], 'visible' => Yii::$app->user->can(\app\models\User::ROLE_ADMIN)],
-        ['label' => 'Posts', 'url' => ['/post/index'], 'visible' => Yii::$app->user->can('managePosts')],
+        ['label' => 'Posts', 'url' => ['/post/index'], 'visible' => Yii::$app->user->can('managePost')],
         ['label' => 'Profile', 'url' => ['/site/profile']],
         '<li>'
         . Html::beginForm(['/site/logout'], 'post')

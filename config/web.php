@@ -48,7 +48,6 @@ $config = [
                 'port' => '587',
                 'encryption' => 'tls',
             ],
-
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

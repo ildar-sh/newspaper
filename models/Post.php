@@ -103,7 +103,8 @@ class Post extends \yii\db\ActiveRecord implements CanBeViewed
             // todo resize image to standard size
             $isImageSaved = $this->image_file->saveAs($filePath);
             if ($isImageSaved) {
-                // todo delete old image
+                // delete old file
+                unlink($this->image);
                 $this->image = $filePath;
                 return true;
             } else {
@@ -122,8 +123,7 @@ class Post extends \yii\db\ActiveRecord implements CanBeViewed
             return false;
         }
 
-        // todo delete image
-        $isImageFileDeleted = false;
+        $isImageFileDeleted = unlink($this->image);
 
         if ($isImageFileDeleted) {
             return true;

@@ -17,7 +17,7 @@ $message = '';
 
 foreach ($newPosts as $newPost) {
     echo \yii\bootstrap\Alert::widget([
-        'body' => 'New post ' . Html::a('"' . $newPost->name . '"',['post/full', 'id' => $newPost->id],['class' => 'alert-link']),
+        'body' => 'New post ' . Html::a('"' . Html::encode($newPost->name) . '"',['post/full', 'id' => $newPost->id],['class' => 'alert-link']),
         'options' => [
             'id' => 'news-' . $newPost->id,
             'class' => 'new-post alert-info',

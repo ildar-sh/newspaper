@@ -16,7 +16,7 @@ return [
 ```
 
 Then run ./yii migrate
-and then create admin account ./yii user/create-admin
+and then create admin account ./yii user/create-admin name password email
 
 ### Mailer
 
@@ -44,8 +44,8 @@ Edit the file `config/console.php` with real data according to your hosting, for
 [
     'urlManager' => [
                 'hostInfo' => 'http://berrynet.ddns.net:88',
-                'baseUrl' => '/newspaper/web',
-                'scriptUrl' => '/newspaper/web/index.php',
+                'baseUrl' => '',
+                'scriptUrl' => '/index.php',
             ],
 ]
 ```
@@ -77,5 +77,5 @@ vendor/bin/codecept run
 DEMO
 ------
 
-Demo available: http://berrynet.ddns.net:88/newspaper/web/index.php
+Demo available: http://berrynet.ddns.net:88/
 credentials for admin user: admin/admin

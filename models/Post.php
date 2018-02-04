@@ -104,7 +104,7 @@ class Post extends \yii\db\ActiveRecord implements CanBeViewed
             $isImageSaved = $this->image_file->saveAs($filePath);
             if ($isImageSaved) {
                 // delete old file
-                unlink($this->image);
+                @unlink($this->image);
                 $this->image = $filePath;
                 return true;
             } else {

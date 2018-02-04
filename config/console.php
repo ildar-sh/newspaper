@@ -28,8 +28,8 @@ $config = [
         'mailer' => $mailer,
         'urlManager' => [
             'hostInfo' => 'http://berrynet.ddns.net:88',
-            'baseUrl' => '/newspaper/web',
-            'scriptUrl' => '/newspaper/web/index.php',
+            'baseUrl' => '',
+            'scriptUrl' => '/index.php',
         ],
     ],
     'params' => $params,

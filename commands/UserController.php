@@ -8,7 +8,6 @@
 
 namespace app\commands;
 
-use app\components\EmailTransport;
 use Yii;
 use yii\console\Controller;
 use app\models\User;
@@ -35,8 +34,5 @@ class UserController extends Controller
             echo print_r($admin->getFirstErrors());
             return 1;
         }
-
-
-
     }
 } 

@@ -13,6 +13,7 @@ use Yii;
 use yii\console\Controller;
 use app\models\Post;
 use app\models\User;
+use yii\helpers\Url;
 
 class NewsController extends Controller
 {
@@ -60,7 +61,7 @@ class NewsController extends Controller
     protected function createStringAbout(Post $post)
     {
         // TODO
-        return $post->name . ' http://berrynet.ddns.net:88/newspaper/web/index.php?r=post/full&id=' . $post->id;
+        return $post->name . Url::to(['post/full', 'id' => $post->id], true);
     }
 
     protected function sendMessage($to, $subject, $text)

@@ -31,6 +31,11 @@ $config = [
             // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
+        'urlManager' => [
+            'hostInfo' => 'http://berrynet.ddns.net:88',
+            'baseUrl' => '/newspaper/web',
+            'scriptUrl' => '/newspaper/web/index.php',
+        ]
     ],
     'params' => $params,
     /*

@@ -62,7 +62,7 @@ class PostSearch extends Post
         $query->andFilterWhere([
             'id' => $this->id,
             'active' => $this->active,
-            'created' => $this->created,
+            'DATE(created)' => $this->created,
             'author_id' => $this->author_id,
         ]);
 

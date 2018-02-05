@@ -63,8 +63,8 @@ class UserSearch extends User
             'id' => $this->id,
             'active' => $this->active,
             'email_confirmed' => $this->email_confirmed,
-            'created' => $this->created,
-            'last_visit' => $this->last_visit,
+            'DATE(created)' => $this->created,
+            'DATE(last_visit)' => $this->last_visit,
         ]);
 
         $query->andFilterWhere(['ilike', 'username', $this->username])

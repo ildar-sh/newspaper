@@ -55,7 +55,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             //'active:boolean',
-            'created',
+            //'created',
+            [
+                'attribute' => 'created',
+                'value' => 'created',
+                'filter' => \yii\jui\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'created',
+                    'language' => 'ru',
+                    'dateFormat' => 'yyyy-MM-dd',
+                    'options' => ['class' => 'form-control'],
+                ]),
+                'format' => 'html',
+            ],
             //'author_id',
 
             [

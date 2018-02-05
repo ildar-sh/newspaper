@@ -51,8 +51,30 @@ $this->params['breadcrumbs'][] = $this->title;
             'role',
             'email:email',
             'email_confirmed:boolean',
-            'created',
-            'last_visit',
+            [
+                'attribute' => 'created',
+                'value' => 'created',
+                'filter' => \yii\jui\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'created',
+                    'language' => 'ru',
+                    'dateFormat' => 'yyyy-MM-dd',
+                    'options' => ['class' => 'form-control'],
+                ]),
+                'format' => 'html',
+            ],
+            [
+                'attribute' => 'last_visit',
+                'value' => 'last_visit',
+                'filter' => \yii\jui\DatePicker::widget([
+                    'model'=>$searchModel,
+                    'attribute'=>'last_visit',
+                    'language' => 'ru',
+                    'dateFormat' => 'yyyy-MM-dd',
+                    'options' => ['class' => 'form-control'],
+                ]),
+                'format' => 'html',
+            ],
             'active:boolean',
 
             [
